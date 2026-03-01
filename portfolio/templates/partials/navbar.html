@@ -1,19 +1,36 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+<nav class="navbar navbar-expand-lg navbar-dark premium-nav">
   <div class="container">
-    <a class="navbar-brand fw-bold fst-italic" href="/">MH</a>
+    <a class="navbar-brand brand-lockup" href="{% url 'portfolio:home' %}">
+      <span class="brand-mark">MH</span>
+      <span class="brand-text">Portfolio</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto nav-cluster">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'blog:posts' %}">Blog</a>
+          <a class="nav-link premium-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'portfolio:home' %}">Portfolio</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link premium-link {% if '/blog/' in request.path %}active{% endif %}" href="{% url 'blog:posts' %}">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link premium-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'portfolio:contact' %}">Contact</a>
+        </li>
+        {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link premium-link {% if 'dashboard' in request.path %}active{% endif %}" href="{% url 'portfolio:dashboard_home' %}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link premium-link {% if request.resolver_match.url_name == 'contact_inbox' or request.resolver_match.url_name == 'contact_inbox_export' %}active{% endif %}" href="{% url 'portfolio:contact_inbox' %}">Inbox</a>
+        </li>
+        {% endif %}
         <li class="nav-item d-flex align-items-center">
-          <a class="btn btn-primary btn-sm" href="{% static 'portfolio/cv.pdf' %}" target="_blank">Download CV</a>
+          <a class="btn btn-premium btn-sm" href="{% static 'portfolio/CV.pdf' %}" target="_blank" rel="noopener noreferrer">Download CV</a>
         </li>
       </ul>
     </div>

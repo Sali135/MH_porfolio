@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block title %}Inbox Contact | Portfolio{% endblock %}
+
+{% block content %}
+<section class="section-head mb-3">
+  <div>
+    <p class="hero-kicker mb-2">Staff only</p>
+    <h1 class="section-title">Inbox contact</h1>
+    <p class="section-meta">{{ message_count }} message{{ message_count|pluralize }}</p>
+  </div>
+  <a class="btn btn-outline-light btn-sm" href="{% url 'portfolio:dashboard_home' %}">Retour dashboard</a>
+</section>
+
+<div class="glass-panel p-3 mb-4">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-md-7">
+      <input
+        type="search"
+        class="form-control"
+        name="q"
+        value="{{ query }}"
+        placeholder="Rechercher par nom, email, sujet..."
+        aria-label="Rechercher un message"
+      >
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" name="status" aria-label="Filtrer les messages">
+        <option value="all" {% if status == 'all' %}selected{% endif %}>Tous</option>
+        <option value="unread" {% if status == 'unread' %}selected{% endif %}>Non lus</option>
+        <option value="read" {% if status == 'read' %}selected{% endif %}>Lus</option>
+      </select>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-primary" type="submit">Filtrer</button>
+    </div>
+  </form>
+  <div class="d-flex justify-content-end mt-2">
+    <a
+      class="btn btn-outline-light btn-sm"
+      href="{% url 'portfolio:contact_inbox_export' %}?status={{ status }}{% if query %}&q={{ query|urlencode }}{% endif %}"
+    >
+      Export CSV
+    </a>
+  </div>
+</div>
+
+{% if contact_messages %}
+<div class="collection-grid">
+  {% for contact_message in contact_messages %}
+  <article class="glass-panel inbox-message {% if not contact_message.is_read %}inbox-message-unread{% endif %} p-3 p-md-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <h2 class="h5 mb-0">{{ contact_message.subject }}</h2>
+      <span class="badge {% if contact_message.is_read %}bg-secondary{% else %}bg-primary{% endif %}">
+        {% if contact_message.is_read %}Lu{% else %}Non lu{% endif %}
+      </span>
+    </div>
+    <p class="small text-muted mb-2">
+      De {{ contact_message.name }} ({{ contact_message.email }}) - {{ contact_message.created_at|date:'M d, Y H:i' }}
+    </p>
+    <p class="mb-3">{{ contact_message.message|linebreaksbr }}</p>
+
+    <form method="post" action="{% url 'portfolio:contact_inbox_update' contact_message.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      {% if contact_message.is_read %}
+      <button class="btn btn-outline-light btn-sm" type="submit" name="action" value="unread">Marquer non lu</button>
+      {% else %}
+      <button class="btn btn-outline-light btn-sm" type="submit" name="action" value="read">Marquer lu</button>
+      {% endif %}
+    </form>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state p-4">
+  Aucun message ne correspond a vos filtres.
+</div>
+{% endif %}
+{% endblock %}

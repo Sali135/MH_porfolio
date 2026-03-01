@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block title %}Dashboard | Portfolio{% endblock %}
+
+{% block content %}
+<section class="section-head mb-4">
+  <div>
+    <p class="hero-kicker mb-2">Staff workspace</p>
+    <h1 class="section-title">Dashboard Portfolio</h1>
+    <p class="section-meta">Pilotage des projets et traitement des messages entrants.</p>
+  </div>
+</section>
+
+<section class="collection-grid collection-grid-3 mb-4">
+  <article class="metric-tile">
+    <p class="metric-label mb-1">Projets</p>
+    <p class="metric-value mb-0">{{ project_count }}</p>
+  </article>
+  <article class="metric-tile">
+    <p class="metric-label mb-1">Mis en avant</p>
+    <p class="metric-value mb-0">{{ featured_count }}</p>
+  </article>
+  <article class="metric-tile">
+    <p class="metric-label mb-1">Messages non lus</p>
+    <p class="metric-value mb-0">{{ unread_count }}</p>
+  </article>
+</section>
+
+<section class="glass-panel p-4">
+  <h2 class="h5 mb-3">Actions rapides</h2>
+  <div class="dashboard-actions">
+    <a class="btn btn-primary" href="{% url 'portfolio:dashboard_projects' %}">Gerer les projets</a>
+    <a class="btn btn-outline-light" href="{% url 'portfolio:contact_inbox' %}">Ouvrir inbox contact</a>
+    <a class="btn btn-outline-light" href="/admin/" target="_blank" rel="noopener noreferrer">Django admin</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,33 +1,82 @@
 {% extends 'layout.html' %}
 
+{% block title %}Blog | Django Portfolio{% endblock %}
+
 {% block content %}
+<section class="section-head mb-3">
+  <div>
+    <p class="hero-kicker mb-2">Journal</p>
+    <h1 class="section-title">Articles techniques</h1>
+    <p class="section-meta">{{ total_posts }} article{{ total_posts|pluralize }} publie{{ total_posts|pluralize }}</p>
+  </div>
+</section>
 
-<h1 class="fs-2">Posts</h1>
-<h3>Aucun  {{total_posts}} post{{total_posts|pluralize}}</h3>
+<form method="get" class="filter-bar row g-2 align-items-center mb-4" role="search">
+  <div class="col-md-10">
+    <input
+      type="search"
+      class="form-control"
+      name="q"
+      value="{{ query }}"
+      placeholder="Rechercher un article..."
+      aria-label="Rechercher un article"
+    >
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+  </div>
+</form>
 
-{% for post in posts %}
-
-<div class="py-3">
-
-  <div class="card card-body bg-black">
-    <div class="row">
-
-      <div class="col-3">
-        <img class="img-fluid" src="{{post.image.url}}" alt="{{post.title}}">
-
+{% if posts %}
+<div class="collection-grid">
+  {% for post in posts %}
+  <article class="card blog-card card-body">
+    <div class="row g-3 align-items-start">
+      <div class="col-sm-4 col-md-3">
+        <img class="img-fluid rounded blog-thumb" src="{{ post.image.url }}" alt="{{ post.title }}">
       </div>
-      <div class="col-9">
-
-        <h1>{{post.title}}</h1>
-        <p>{{post.description|striptags|truncatechars:100}}</p>
-        <p>{{post.date|date:'M d Y'|upper}}</p>
-
-        <a href="{% url 'blog:post_detail' post.id %}">{{post.title}}</a>
+      <div class="col-sm-8 col-md-9">
+        <h2 class="h4 mb-1">{{ post.title }}</h2>
+        <div class="post-meta-row">
+          <span class="pill-meta">{{ post.date|date:'M d, Y' }}</span>
+          <span class="pill-meta">Article</span>
+        </div>
+        <p class="mb-3">{{ post.description|striptags|truncatechars:180 }}</p>
+        <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-light btn-sm">Lire l'article</a>
       </div>
     </div>
-  </div>
+  </article>
+  {% endfor %}
 </div>
+{% else %}
+<div class="empty-state p-4">
+  Aucun article ne correspond a votre recherche.
+</div>
+{% endif %}
 
-{% endfor %}
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="mt-4" aria-label="Pagination articles">
+  <ul class="pagination pagination-dark mb-0">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}" aria-label="Page precedente">
+        Precedent
+      </a>
+    </li>
+    {% endif %}
 
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </li>
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}" aria-label="Page suivante">
+        Suivant
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}

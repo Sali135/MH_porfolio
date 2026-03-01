@@ -2,6 +2,7 @@
 
 # media files 
 media
+staticfiles
 
 ## virtual environment
 venv
@@ -12,3 +13,6 @@ venv
 ### ignore sqlite3
 
 db.sqlite3
+
+# local environment variables
+.env

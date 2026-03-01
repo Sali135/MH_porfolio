@@ -1,19 +1,18 @@
 {% extends 'layout.html' %}
 
+{% block title %}{{ post.title }} | Blog{% endblock %}
+
 {% block content %}
-
-<div class="text-center">
-
-  <h1>{{post.title}}</h1>
-  <h2 class="my-2 h5 text-muted">{{post.date|date:'F jS Y'}}</h2>
-
-  <img src="{{post.image.url}}" alt="{{post.title}}" class="img-fluid">
-
-
-  <div class="my-4">
-
-  {{post.description|safe}}
+<article class="post-shell reveal">
+  <a href="{% url 'blog:posts' %}" class="btn btn-outline-light btn-sm mb-3">Retour au blog</a>
+  <h1 class="mb-1">{{ post.title }}</h1>
+  <div class="post-meta-row">
+    <span class="pill-meta">{{ post.date|date:'F j, Y' }}</span>
+    <span class="pill-meta">Lecture</span>
   </div>
-</div>
-
+  <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid post-cover mb-4">
+  <div class="post-content">
+    {{ post.description|linebreaks }}
+  </div>
+</article>
 {% endblock %}
