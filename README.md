@@ -59,6 +59,7 @@ Open `http://localhost:8000`.
 ### Deploy on Render (PostgreSQL)
 
 This repository includes a `render.yaml` blueprint for a free Render web service and free PostgreSQL database.
+Render deployment installs `requirements-render.txt` (minimal server dependencies).
 
 1. Push the project to GitHub.
 2. In Render, create a new Blueprint and select your repository.
